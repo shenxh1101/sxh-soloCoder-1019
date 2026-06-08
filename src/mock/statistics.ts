@@ -1,0 +1,46 @@
+import type { Statistics } from '@/types';
+
+export const mockStatistics: Statistics = {
+  totalProducts: 1258,
+  totalTransactions: 3426,
+  totalAmount: 12580000,
+  totalUsers: 856,
+  monthlyTrend: [
+    { month: '2024-01', transactions: 220, amount: 680000 },
+    { month: '2024-02', transactions: 250, amount: 750000 },
+    { month: '2024-03', transactions: 280, amount: 890000 },
+    { month: '2024-04', transactions: 310, amount: 980000 },
+    { month: '2024-05', transactions: 340, amount: 1050000 },
+    { month: '2024-06', transactions: 380, amount: 1200000 },
+    { month: '2024-07', transactions: 420, amount: 1350000 },
+    { month: '2024-08', transactions: 450, amount: 1480000 },
+    { month: '2024-09', transactions: 480, amount: 1580000 },
+    { month: '2024-10', transactions: 520, amount: 1720000 },
+    { month: '2024-11', transactions: 560, amount: 1850000 },
+    { month: '2024-12', transactions: 600, amount: 2050000 },
+  ],
+  topProducts: [
+    { productId: 'prod-001', productName: '全国居民消费行为分析数据集', count: 186 },
+    { productId: 'prod-002', productName: '中小企业信用评估数据库', count: 152 },
+    { productId: 'prod-003', productName: '电商用户画像标签体系', count: 138 },
+    { productId: 'prod-004', productName: '城市交通流量实时数据', count: 125 },
+    { productId: 'prod-005', productName: '金融市场风险分析模型', count: 108 },
+  ],
+  categoryDistribution: [
+    { category: '基础数据集', count: 425 },
+    { category: '分析数据集', count: 356 },
+    { category: 'API 服务', count: 278 },
+    { category: '数据报告', count: 125 },
+    { category: '模型数据集', count: 74 },
+  ],
+  regionDistribution: [
+    { region: '华东', count: 386 },
+    { region: '华北', count: 298 },
+    { region: '华南', count: 256 },
+    { region: '华中', count: 142 },
+    { region: '西南', count: 98 },
+    { region: '西北', count: 56 },
+    { region: '东北', count: 48 },
+    { region: '全国', count: 24 },
+  ],
+};

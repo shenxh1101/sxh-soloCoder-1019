@@ -1,0 +1,110 @@
+import type { Transaction } from '@/types';
+
+function generateId() {
+  return 'trans-' + Math.random().toString(36).substring(2, 11);
+}
+
+const productNames = [
+  '全国居民消费行为分析数据集',
+  '中小企业信用评估数据库',
+  '电商用户画像标签体系',
+  '金融市场风险分析模型',
+  '城市交通流量实时数据',
+  '医疗健康记录匿名化数据集',
+];
+
+export const mockTransactions: Transaction[] = [
+  {
+    id: generateId(),
+    authorizationId: 'auth-001',
+    productId: 'prod-001',
+    productName: productNames[0],
+    buyerId: 'user-001',
+    buyerName: '张明',
+    sellerId: 'user-002',
+    sellerName: '李华',
+    amount: 4999,
+    duration: 90,
+    status: 'completed',
+    createdAt: '2024-10-18 14:30',
+  },
+  {
+    id: generateId(),
+    authorizationId: 'auth-002',
+    productId: 'prod-002',
+    productName: productNames[1],
+    buyerId: 'user-005',
+    buyerName: '刘洋',
+    sellerId: 'user-004',
+    sellerName: '陈伟',
+    amount: 19999,
+    duration: 180,
+    status: 'completed',
+    createdAt: '2024-08-28 10:30',
+  },
+  {
+    id: generateId(),
+    authorizationId: 'auth-003',
+    productId: 'prod-003',
+    productName: productNames[2],
+    buyerId: 'user-001',
+    buyerName: '张明',
+    sellerId: 'user-002',
+    sellerName: '李华',
+    amount: 4999,
+    duration: 90,
+    status: 'completed',
+    createdAt: '2024-05-28 14:30',
+  },
+  {
+    id: generateId(),
+    authorizationId: 'auth-004',
+    productId: 'prod-004',
+    productName: productNames[3],
+    buyerId: 'user-005',
+    buyerName: '刘洋',
+    sellerId: 'user-004',
+    sellerName: '陈伟',
+    amount: 19999,
+    duration: 365,
+    status: 'refunded',
+    createdAt: '2024-07-10 14:30',
+  },
+  {
+    id: generateId(),
+    authorizationId: 'auth-005',
+    productId: 'prod-005',
+    productName: productNames[4],
+    buyerId: 'user-001',
+    buyerName: '张明',
+    sellerId: 'user-002',
+    sellerName: '李华',
+    amount: 999,
+    duration: 30,
+    status: 'completed',
+    createdAt: '2024-09-15 10:00',
+  },
+  {
+    id: generateId(),
+    authorizationId: 'auth-006',
+    productId: 'prod-006',
+    productName: productNames[5],
+    buyerId: 'user-005',
+    buyerName: '刘洋',
+    sellerId: 'user-004',
+    sellerName: '陈伟',
+    amount: 999,
+    duration: 30,
+    status: 'completed',
+    createdAt: '2024-10-01 16:00',
+  },
+];
+
+export const getTransactionById = (id: string) => mockTransactions.find((t) => t.id === id);
+
+export const getTransactionsByUser = (userId: string, role: string) => {
+  if (role === 'provider' || role === 'admin') {
+    return mockTransactions.filter((t) => t.sellerId === userId || role === 'admin');
+  }
+  return mockTransactions.filter((t) => t.buyerId === userId);
+};
