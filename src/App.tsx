@@ -36,6 +36,8 @@ export default function App() {
           <Route path="transactions" element={<TransactionRecords />} />
           <Route path="reviews" element={<ReviewCenter />} />
           <Route path="admin" element={<AdminDashboard />} />
+          <Route path="admin/review" element={<AdminDashboard />} />
+          <Route path="admin/statistics" element={<AdminDashboard />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

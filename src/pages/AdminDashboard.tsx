@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Search,
   Filter,
@@ -47,6 +48,8 @@ type TabType = 'statistics' | 'review';
 type ViewMode = 'list' | 'detail';
 
 export default function AdminDashboard() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>('statistics');
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [selectedProduct, setSelectedProduct] = useState<DataProduct | null>(null);
@@ -56,6 +59,20 @@ export default function AdminDashboard() {
 
   const { statistics, pendingProducts, loading, fetchStatistics, fetchPendingProducts, reviewProduct } = useAdminStore();
   const { products } = useProductStore();
+
+  useEffect(() => {
+    if (location.pathname.includes('/review')) {
+      setActiveTab('review');
+    } else if (location.pathname.includes('/statistics')) {
+      setActiveTab('statistics');
+    }
+  }, [location.pathname]);
+
+  const handleTabChange = (tab: TabType) => {
+    setActiveTab(tab);
+    setViewMode('list');
+    navigate(`/admin/${tab === 'review' ? 'review' : 'statistics'}`);
+  };
 
   useEffect(() => {
     fetchStatistics();
@@ -721,10 +738,7 @@ export default function AdminDashboard() {
     <div className="animate-fade-in">
       <div className="flex gap-2 mb-6">
         <button
-          onClick={() => {
-            setActiveTab('statistics');
-            setViewMode('list');
-          }}
+          onClick={() => handleTabChange('statistics')}
           className={cn(
             'px-6 py-2.5 rounded-lg font-medium transition-all',
             activeTab === 'statistics'
@@ -736,10 +750,7 @@ export default function AdminDashboard() {
           成交统计
         </button>
         <button
-          onClick={() => {
-            setActiveTab('review');
-            setViewMode('list');
-          }}
+          onClick={() => handleTabChange('review')}
           className={cn(
             'px-6 py-2.5 rounded-lg font-medium transition-all',
             activeTab === 'review'

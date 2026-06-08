@@ -14,9 +14,12 @@ export default function Header() {
 
   const pageTitles: Record<string, string> = {
     '/': '数据目录',
+    '/catalog': '数据目录',
+    '/applications': '申请流程',
     '/authorizations': '授权管理',
     '/transactions': '交易记录',
     '/reviews': '评价中心',
+    '/admin': '运营后台',
     '/admin/review': '上架审核',
     '/admin/statistics': '成交统计',
   };
@@ -25,8 +28,17 @@ export default function Header() {
     if (location.pathname.startsWith('/product/')) {
       return '产品详情';
     }
-    if (location.pathname.startsWith('/apply/')) {
+    if (location.pathname.startsWith('/applications')) {
       return '申请流程';
+    }
+    if (location.pathname.startsWith('/admin/review')) {
+      return '上架审核';
+    }
+    if (location.pathname.startsWith('/admin/statistics')) {
+      return '成交统计';
+    }
+    if (location.pathname.startsWith('/admin')) {
+      return '运营后台';
     }
     return pageTitles[location.pathname] || '数据要素流通平台';
   };

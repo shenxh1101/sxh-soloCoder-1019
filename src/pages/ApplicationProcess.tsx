@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Plus,
   Search,
@@ -42,6 +43,8 @@ type ApplicationFormData = z.infer<typeof applicationSchema>;
 type ViewMode = 'list' | 'create' | 'detail';
 
 export default function ApplicationProcess() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [selectedAppId, setSelectedAppId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -79,6 +82,7 @@ export default function ApplicationProcess() {
     formState: { errors, isSubmitting },
     reset,
     watch,
+    setValue,
   } = useForm<ApplicationFormData>({
     resolver: zodResolver(applicationSchema),
     defaultValues: {
@@ -101,6 +105,29 @@ export default function ApplicationProcess() {
     }
     return () => clearSelectedApplication();
   }, [selectedAppId, fetchApplicationById, clearSelectedApplication]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const mode = params.get('mode');
+    const productId = params.get('productId');
+    const tier = params.get('tier');
+
+    if (mode === 'create') {
+      setViewMode('create');
+      if (productId) {
+        setValue('productId', productId);
+        const product = products.find((p) => p.id === productId);
+        if (product && tier) {
+          setValue('selectedPricingTier', tier);
+          const selectedTier = product.pricing.find((p) => p.id === tier);
+          if (selectedTier) {
+            setValue('duration', selectedTier.duration);
+          }
+        }
+      }
+      navigate('/applications', { replace: true });
+    }
+  }, [location.search, products, setValue, navigate]);
 
   const filteredApplications = applications.filter((app) => {
     const matchesStatus = statusFilter === 'all' || app.status === statusFilter;
@@ -524,6 +551,24 @@ export default function ApplicationProcess() {
           <div className="lg:col-span-2 space-y-6">
             <div className="card">
               <h2 className="text-lg font-semibold text-neutral-800 mb-4">申请信息</h2>
+              {selectedApplication.selectedPricingTier && selectedProduct && (
+                <div className="mb-4 p-4 bg-accent-50 rounded-lg border border-accent-200">
+                  <h3 className="font-medium text-accent-900 mb-2">已选规格</h3>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold text-neutral-800">
+                        {selectedProduct.pricing.find((p) => p.id === selectedApplication.selectedPricingTier)?.name}
+                      </p>
+                      <p className="text-sm text-neutral-500">
+                        {selectedProduct.pricing.find((p) => p.id === selectedApplication.selectedPricingTier)?.duration}天
+                      </p>
+                    </div>
+                    <p className="text-xl font-bold text-accent-950">
+                      ¥{selectedProduct.pricing.find((p) => p.id === selectedApplication.selectedPricingTier)?.price.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm text-neutral-500">使用目的</label>

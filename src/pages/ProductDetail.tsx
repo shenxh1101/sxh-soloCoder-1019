@@ -81,7 +81,7 @@ export default function ProductDetail() {
   const selectedPricing = selectedProduct.pricing.find((p) => p.id === selectedTier);
 
   const handleApply = () => {
-    navigate(`/apply/${selectedProduct.id}?tier=${selectedTier}`);
+    navigate(`/applications?mode=create&productId=${selectedProduct.id}&tier=${selectedTier}`);
   };
 
   return (

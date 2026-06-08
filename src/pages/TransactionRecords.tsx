@@ -39,17 +39,62 @@ export default function TransactionRecords() {
     }
   }, [user, fetchTransactions]);
 
+  const isDateInRange = (dateStr: string, range: string): boolean => {
+    const today = new Date('2026-06-08');
+    const transDate = new Date(dateStr.split(' ')[0]);
+
+    if (range === 'all') return true;
+
+    const startOfWeek = new Date(today);
+    const dayOfWeek = today.getDay();
+    startOfWeek.setDate(today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const startOfQuarter = new Date(today.getFullYear(), Math.floor(today.getMonth() / 3) * 3, 1);
+    const startOfYear = new Date(today.getFullYear(), 0, 1);
+    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    switch (range) {
+      case 'today':
+        return transDate >= startOfToday;
+      case 'week':
+        return transDate >= startOfWeek;
+      case 'month':
+        return transDate >= startOfMonth;
+      case 'quarter':
+        return transDate >= startOfQuarter;
+      case 'year':
+        return transDate >= startOfYear;
+      default:
+        return true;
+    }
+  };
+
   const filteredTransactions = transactions.filter((trans) => {
     const matchesStatus = statusFilter === 'all' || trans.status === statusFilter;
     const matchesSearch = trans.productName.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesStatus && matchesSearch;
+    const matchesDate = isDateInRange(trans.createdAt, dateRange);
+    return matchesStatus && matchesSearch && matchesDate;
   });
 
-  const totalAmount = transactions
+  const totalAmount = filteredTransactions
     .filter((t) => t.status === 'completed')
     .reduce((sum, t) => sum + t.amount, 0);
 
-  const totalCount = transactions.filter((t) => t.status === 'completed').length;
+  const totalCount = filteredTransactions.filter((t) => t.status === 'completed').length;
+
+  const getMonthIncome = () => {
+    return filteredTransactions
+      .filter((t) => t.status === 'completed' && (user?.role === 'provider' || user?.role === 'admin'))
+      .reduce((sum, t) => sum + t.amount, 0);
+  };
+
+  const getMonthExpense = () => {
+    return filteredTransactions
+      .filter((t) => t.status === 'completed' && user?.role === 'applicant')
+      .reduce((sum, t) => sum + t.amount, 0);
+  };
 
   const getRoleBasedLabel = (trans: Transaction) => {
     if (user?.role === 'provider') {
@@ -119,32 +164,38 @@ export default function TransactionRecords() {
         </div>
         <div className="card p-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-neutral-500">本月收入</span>
+            <span className="text-sm text-neutral-500">本期收入</span>
             <div className="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center">
               <TrendingUp className="w-5 h-5" />
             </div>
           </div>
           <p className="text-3xl font-bold text-neutral-800 mt-2">
-            {formatCurrency(totalAmount * 0.3)}
+            {formatCurrency(getMonthIncome())}
           </p>
-          <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
-            <ArrowUpRight className="w-3 h-3" />
-            12.5% 较上月
+          <p className="text-xs text-neutral-500 mt-1">
+            {dateRange === 'all' ? '全部时间' :
+             dateRange === 'today' ? '今日' :
+             dateRange === 'week' ? '本周' :
+             dateRange === 'month' ? '本月' :
+             dateRange === 'quarter' ? '本季度' : '本年'}
           </p>
         </div>
         <div className="card p-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-neutral-500">本月支出</span>
+            <span className="text-sm text-neutral-500">本期支出</span>
             <div className="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center">
               <TrendingDown className="w-5 h-5" />
             </div>
           </div>
           <p className="text-3xl font-bold text-neutral-800 mt-2">
-            {formatCurrency(totalAmount * 0.15)}
+            {formatCurrency(getMonthExpense())}
           </p>
-          <p className="text-xs text-orange-600 mt-1 flex items-center gap-1">
-            <ArrowDownRight className="w-3 h-3" />
-            5.2% 较上月
+          <p className="text-xs text-neutral-500 mt-1">
+            {dateRange === 'all' ? '全部时间' :
+             dateRange === 'today' ? '今日' :
+             dateRange === 'week' ? '本周' :
+             dateRange === 'month' ? '本月' :
+             dateRange === 'quarter' ? '本季度' : '本年'}
           </p>
         </div>
       </div>

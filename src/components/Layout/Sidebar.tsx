@@ -18,10 +18,10 @@ import { cn } from '@/lib/utils';
 
 const menuItems = [
   { path: '/', label: '数据目录', icon: Database, roles: ['applicant', 'provider', 'admin'] },
+  { path: '/applications', label: '申请流程', icon: ClipboardList, roles: ['applicant', 'provider', 'admin'] },
   { path: '/authorizations', label: '授权管理', icon: Key, roles: ['applicant', 'provider', 'admin'] },
   { path: '/transactions', label: '交易记录', icon: Receipt, roles: ['applicant', 'provider', 'admin'] },
   { path: '/reviews', label: '评价中心', icon: Star, roles: ['applicant', 'provider', 'admin'] },
-  { path: '/apply/0', label: '申请流程', icon: ClipboardList, roles: ['applicant', 'provider'], hidden: true },
   { path: '/product/0', label: '产品详情', icon: FileText, roles: ['applicant', 'provider', 'admin'], hidden: true },
 ];
 
